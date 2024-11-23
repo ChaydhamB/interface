@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Energy Monitor</title>
+    <style>
+        body {
+            
+            background-color: #0f0f0f;
+            color: #00e5ff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            0% { background-color: #ffffff; opacity: 0; }
+            100% { background-color: #0f0f0f; opacity: 1; }
+        }
+
+        .container-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            margin-bottom: 25px;
+        }
+
+        .container, .container2 {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0px rgba(0, 229, 255, 0.8);
+            backdrop-filter: blur(10px);
+            flex: 1;
+            min-width: 300px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+
+        .container2 {
+            box-shadow: 0 0 6px #ff0000;
+        }
+
+        .wide-container {
+    height: 8%; /* Decreased height to make the container shorter */
+    width: 95%;
+    text-align: center;
+    padding: 10px 20px; /* Reduced padding to make it more compact */
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 6px rgba(0, 229, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    margin: 15px 0; /* Reduced margin to fit within smaller height */
+}
+.wide-container2 {
+    height: 60%; /* Decreased height to make the container shorter */
+    width: 100%;
+    text-align: center;
+    padding: 10px 20px; /* Reduced padding to make it more compact */
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 6px rgba(226, 226, 226, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    margin: 60px 0; /* Reduced margin to fit within smaller height */
+}
+
+
+        h1 {
+        font-size: 2rem;
+            margin-bottom: 15px;
+   
+            color: #ffffff;
+        }
+        h3 {
+        font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #ffea00;
+            color: #ffffff;
+        }
+        h4 {
+        font-size: 3rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #ffffff;
+            color: #313131;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px;
+            color: #ff0000;
+        }
+
+
+        #dateTime {
+            font-size: 1.2em;
+            color: #ffffff;
+            margin: 10px 0;
+            text-shadow: 0 0 5px #ffea00;
+        }
+
+        .data, .status {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .box, .boxx {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .box {
+            flex: 1;
+            background: rgba(0, 229, 255, 0.2);
+            box-shadow: 0 0 6px rgba(0, 229, 255, 0.8);
+        }
+
+        .boxx {
+            background: #343434;
+            box-shadow: 0 0 6px #ff0000;
+            font-size: 1.5em;
+            color: #898989;
+            display: flex;
+            justify-content: space-around;
+            min-width: 400px;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            background-color: rgba(0, 229, 255, 0.4);
+        }
+        .boxx:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 145, 0, 0.4);
+        }
+        #voltage, #current, #power, #pumpStatus, #hydroStatus, #solarStatus {
+            font-size: 1.8em;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ffffff;
+        }
+
+        .tank-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .tank {
+            width: 100px;
+            height: 250px;
+            border: 2px solid #00e5ff;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .tank-fill {
+            background-color: #00e5ff;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.3s ease;
+        }
+
+        .tank-label {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8em;
+            color: #555;
+            text-align: center;
+            width: 100%;
+        }
+
+
+
+        
+  
+
+       
+
+        
+        .weather-widget {
+    width: 99%; /* Updated width to 95% */
+  
+    padding: 2px; /* Added padding */
+    background: rgba(255, 255, 255, 0.1); /* Changed background color and opacity */
+    box-shadow: 0 0 6px rgba(221, 221, 221, 0.8); /* Updated shadow color and blur */
+    backdrop-filter: blur(10px); /* Added backdrop blur effect */
+    border-radius: 10px; /* Reduced border radius */
+    margin: 50px 0; /* Added margin to create spacing */
+}
+
+
+        .weather-header {
+            display: flex;
+            padding: 20px;
+            background: #2b2b2b;
+            border-bottom: 1px solid #666666;
+            
+
+        }
+
+        .weather-icon img {
+            width: 120px;
+        }
+
+        .weather-info h2 {
+            margin: 10px 0 5px;
+            font-size: 5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .weather-info p {
+            margin: 0;
+            color: #9c9c9c;
+            
+        }
+
+        .date-time p {
+            text-align: center;
+            margin: 10px 0 5px;
+            margin: 3px 0;
+            color: #9c9c9c;
+        }
+
+        .forecast {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 10px;
+            background: #5c5c5c;
+            border-radius: 10px;
+        }
+
+        .forecast-day {
+            text-align: center;
+        }
+
+        .forecast-day p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .forecast-day img {
+            width: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-widget">
+        <!-- Current Weather Section -->
+        <div class="weather-header">
+            <div class="weather-icon">
+                <img id="current-icon" src="" alt="Weather Icon">
+            </div>
+            <div class="weather-info">
+               
+                <p id="condition">Clear</p>
+            </div>
+            <h4 id="temperature">23°C </h4>
+            <div class="date-time">
+                <p id="date">Thu 8.20</p>
+                <p id="time">19:30</p>
+                <p id="location">Sousse</p>
+            </div>
+        </div>
+
+        <!-- Forecast Section -->
+        <div class="forecast">
+            <div class="forecast-day">
+                <p id="day1-name">Tue</p>
+                <img id="day1-icon" src="" alt="Icon">
+                <p id="day1-temp">23°/30°</p>
+            </div>
+            <div class="forecast-day">
+                <p id="day2-name">Wed</p>
+                <img id="day2-icon" src="" alt="Icon">
+                <p id="day2-temp">24°/30°</p>
+            </div>
+            <div class="forecast-day">
+                <p id="day3-name">Thu</p>
+                <img id="day3-icon" src="" alt="Icon">
+                <p id="day3-temp">24°/30°</p>
+            </div>
+        </div>
+    </div>   
+    <div class="container-row">
+        <!-- Water Tank Levels Container -->
+        <div class="container">
+            <h1>Water Tank Levels</h1>
+            <div class="tank-container">
+                <div class="tank">
+                    <div class="tank-fill" id="tank1-fill" style="height: 0%;"></div>
+                </div>
+                <div class="tank">
+                    <div class="tank-fill" id="tank2-fill" style="height: 0%;"></div>
+                </div>
+            </div>
+            <div class="tank-container">
+                <div class="tank-label">UPPER TANK</div>
+                <div class="tank-label">LOWER TANK</div>
+            </div>
+        </div>
+
+        <!-- Energy Monitoring Container -->
+        <div class="container">
+            <h1>Energy Monitor</h1>
+           
+            <div class="data">
+                <div class="box">
+                    <p>Voltage</p>
+                    <p id="voltage">0.00 V</p>
+                </div>
+                <div class="box">
+                    <p>Current</p>
+                    <p id="current">0.00 A</p>
+                </div>
+                <div class="box">
+                    <p>Power</p>
+                    <p id="power">0.00 W</p>
+                </div>
+            </div>
+            <div class="status">
+                <div class="box">
+                    <p>Pump</p>
+                    <p id="pumpStatus">Off</p>
+                </div>
+                <div class="box">
+                    <p>Hydro - Alternator</p>
+                    <p id="hydroStatus">Off</p>
+                </div>
+                <div class="box">
+                    <p>Solar Panel</p>
+                    <p id="solarStatus">Off</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Container -->
+        <div class="container2">
+            <h2>Emergency Status</h2>
+            <div class="conta">
+                <div class="boxx">
+                    <p>Water Overflow Check Now!</p>
+                </div>
+                <div class="boxx">
+                    <p>Insufficient Power Check Now!</p>
+                </div>
+                <div class="boxx">
+                    <p>PUMP Disconnected Check Now!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wide-container2">
+        <div class="footer">
+            <p>Created with ❤️ by TAKWA & CHAYDHAM</p>
+            <p>  </p>
+        </div>
+    </div>
+    <!-- ESP8266 Control Panel Container (Wide) -->
+    <div class="wide-container">
+        
+        <div class="control-panel">
+            <!-- Pump Relay Control -->
+            <div >
+                <h2></h2>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="pumpRelay">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <!-- Hydro Relay Control -->
+            <div class="switch-container">
+                <h2></h2>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="hydroRelay">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <!-- Solar Relay Control -->
+            <div class="switch-container">
+                <h2></h2>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="solarRelay">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Created with ❤️ by TAKWA & CHAYDHAM</p>
+    </div>
+
+    <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"; 
+
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyCB24M1uhp6-Vv-ggaqhhKcQqxQcPnd6Cc",
+    authDomain: "step-66bce.firebaseapp.com",
+    databaseURL: "https://step-66bce-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "step-66bce",
+    storageBucket: "step-66bce.firebasestorage.app",
+    messagingSenderId: "724663138827",
+    appId: "1:724663138827:web:e142993cb56f3d0f81e50e"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app); // Initialize the database
+
+// Function to sign in user with email and password
+function signInUser(email, password) {
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("User signed in:", user.email);
+            fetchData(); // Fetch data from Firebase after successful sign-in
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Error signing in:", errorCode, errorMessage);
+        });
+}
+
+// Example email and password
+const email = "chaydambaya1@gmail.com"; // Replace with the user's email
+const password = "123456";   // Replace with the user's password
+
+// Sign in the user when the page loads
+window.onload = () => {
+    signInUser(email, password);
+};
+
+// Function to fetch data from Firebase
+function fetchData() {
+    // Example paths in the Firebase database
+    const voltageRef = ref(database, 'energy/voltage');
+    const currentRef = ref(database, 'currentValue');
+    const powerRef = ref(database, 'energy/power');
+    const pumpStatusRef = ref(database, 'control/pumprelay');
+    const hydroStatusRef = ref(database, 'control/hydrorelay');
+    const tank1Ref = ref(database, 'waterPercentage'); // Correct reference path for waterPercentage
+
+    // Getting values from Firebase and updating the HTML
+    onValue(voltageRef, (snapshot) => {
+        const voltage = snapshot.val();
+        document.getElementById('voltage').textContent = 5 + " V";
+    });
+
+    onValue(currentRef, (snapshot) => {
+        const current = snapshot.val();
+        document.getElementById('current').textContent = current + " A";
+    });
+
+    onValue(voltageRef, (snapshot) => {
+    const voltage = 5;  // Get the voltage from Firebase
+    onValue(currentRef, (snapshot) => {
+        const current = snapshot.val();  // Get the current from Firebase
+
+        // Calculate the power (P = V * I)
+        const power = voltage * current;
+
+        // Display the calculated power in the HTML
+        document.getElementById('power').textContent = power + " W";
+    });
+});
+
+    onValue(pumpStatusRef, (snapshot) => {
+        const pumpStatus = snapshot.val();
+        document.getElementById('pumpStatus').textContent = pumpStatus ? "On" : "Off";
+    });
+
+    onValue(hydroStatusRef, (snapshot) => {
+        const hydroStatus = snapshot.val();
+        document.getElementById('hydroStatus').textContent = hydroStatus ? "On" : "Off";
+    });
+
+    onValue(tank1Ref, (snapshot) => {
+        const tankPercentage = snapshot.val();
+        document.getElementById('tank1-fill').style.height = `${tankPercentage}%`;
+    });
+}
+
+// Updating data in the database based on user interaction
+const pumpRelay = document.getElementById('pumpRelay');
+const hydroRelay = document.getElementById('hydroRelay');
+
+pumpRelay.addEventListener('change', (e) => {
+    const status = e.target.checked;
+    set(ref(database, 'control/pumprelay'), status); // Update pumprelay value in Firebase
+});
+
+hydroRelay.addEventListener('change', (e) => {
+    const status = e.target.checked;
+    set(ref(database, 'control/hydrorelay'), status); // Update hydrorelay value in Firebase
+});
+
+    
+
+/*        function updateDateTime() {
+            const now = new Date();
+            const formattedDateTime = now.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+            });
+            document.getElementById('dateTime').textContent = formattedDateTime;
+        }
+
+        setInterval(updateDateTime, 1000);*/
+
+         // API Settings
+         const apiKey = "191708b5af7bf61ceef644fe63ba3d5b"; // Replace with your actual API key
+        const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=35.8256&lon=10.6369&units=metric&appid=${apiKey}`;
+
+        // Elements for Current Weather
+        const temperatureEl = document.getElementById("temperature");
+        const conditionEl = document.getElementById("condition");
+        const dateEl = document.getElementById("date");
+        const timeEl = document.getElementById("time");
+        const locationEl = document.getElementById("location");
+        const currentIconEl = document.getElementById("current-icon");
+
+        // Elements for Forecast
+        const day1NameEl = document.getElementById("day1-name");
+        const day1IconEl = document.getElementById("day1-icon");
+        const day1TempEl = document.getElementById("day1-temp");
+
+        const day2NameEl = document.getElementById("day2-name");
+        const day2IconEl = document.getElementById("day2-icon");
+        const day2TempEl = document.getElementById("day2-temp");
+
+        const day3NameEl = document.getElementById("day3-name");
+        const day3IconEl = document.getElementById("day3-icon");
+        const day3TempEl = document.getElementById("day3-temp");
+
+        // Fetch Weather Data
+        async function fetchWeather() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // Log the response for debugging purposes
+                console.log(data);
+
+                // Current Weather
+                const currentWeather = data.list[0];
+                temperatureEl.textContent = `${Math.round(currentWeather.main.temp)}°C`;
+                conditionEl.textContent = currentWeather.weather[0].description;
+                locationEl.textContent = data.city.name;
+                currentIconEl.src = `http://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`;
+
+                // Date and Time
+                const now = new Date();
+                dateEl.textContent = now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+                timeEl.textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+                // Forecast (Next 3 Days)
+                const forecastDays = [8, 16, 24]; // Indices for 24-hour interval forecasts
+                const dayElements = [
+                    { name: day1NameEl, icon: day1IconEl, temp: day1TempEl },
+                    { name: day2NameEl, icon: day2IconEl, temp: day2TempEl },
+                    { name: day3NameEl, icon: day3IconEl, temp: day3TempEl },
+                ];
+
+                forecastDays.forEach((index, i) => {
+                    if (data.list[index]) {
+                        const forecast = data.list[index];
+                        const forecastDate = new Date(forecast.dt * 1000);
+
+                        // Update Day Name
+                        dayElements[i].name.textContent = forecastDate.toLocaleDateString("en-US", { weekday: "short" });
+
+                        // Update Icon
+                        dayElements[i].icon.src = `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`;
+
+                        // Update Temperature Range
+                        dayElements[i].temp.textContent = `${Math.round(forecast.main.temp_min)}°/${Math.round(forecast.main.temp_max)}°`;
+                    } else {
+                        console.error("Forecast data is missing for index:", index);
+                    }
+                });
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+            }
+        }
+
+        // Initialize
+        fetchWeather();
+    </script>
+</body>
+</html>

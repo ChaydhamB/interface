@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEP Assistant</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Pseudo-element for the blurred background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('img.png'); /* Replace with your background image path */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Prevent repeating the background image */
+            filter: blur(8px); /* Adjust the blur level as needed */
+            z-index: 0; /* Place behind all other content */
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent background for the content box */
+            border-radius: 15px;
+            padding: 40px;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1; /* Ensure the container is above the blurred background */
+            display: flex;
+            align-items: center; /* Align items vertically */
+        }
+
+        #gif {
+            width: 100px; /* Adjust the width as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-right: 20px; /* Space between GIF and the text */
+        }
+
+        #logo {
+            width: 300px; /* Adjust the width of the logo as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-left: auto; /* Push logo to the right */
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #00084d;
+            overflow: hidden; /* Ensures text is hidden during animation */
+            white-space: nowrap; /* Prevents text wrapping */
+            width: 0; /* Initial width for typing effect */
+            animation: typing 3s steps(30) forwards; /* Typing animation */
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%; /* Final width after animation */
+            }
+        }
+
+        .assistant-message {
+            font-size: 1.2em;
+            margin: 10px 0;
+            color: #00084d;
+            overflow: hidden; /* Ensures text is hidden during animation */
+            white-space: nowrap; /* Prevents text wrapping */
+            width: 0; /* Initial width for typing effect */
+            animation: typing-assistant 4s steps(40) forwards;
+            animation-delay: 3s; /* Delay to start after the first animation */
+        }
+
+        @keyframes typing-assistant {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%; /* Final width after animation */
+            }
+        }
+
+        .button {
+            margin: 10px;
+            padding: 15px 25px; /* Increased button size */
+            border: none;
+            border-radius: 5px;
+            background-color: #000279;
+            color: #ffffff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #00084d;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    
+        <div>
+            <h1>Hello Chaydham</h1>
+            <p class="assistant-message">I'm your STEP assistant. How can I help you?</p>
+            <button class="button" onclick="navigateTo('control.html')">Control Page</button>
+            <button class="button" onclick="navigateTo('dash.html')">Monitoring</button>
+        </div>
+        <img id="logo" src="LOGO.png" alt="Logo Description"> <!-- Replace with your logo path -->
+    </div>
+
+    <div class="footer">
+        <p>Powered by Solar Energy | Project ESP8266</p>
+    </div>
+
+    <script>
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>

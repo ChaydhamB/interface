@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relay Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #2b2b2b;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .container-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap; /* Ensures responsiveness on smaller screens */
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            min-width: 280px;
+            margin-bottom: 20px;
+        }
+        .containertext {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            min-width: 280px;
+            margin-bottom: 20px;
+            width: 60%;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+        }
+
+        .relay-square {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+            padding: 15px;
+        }
+
+        .relay-square p {
+            margin: 10px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 25px;
+            transition: 0.4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 17px;
+            width: 17px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #0078d7;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+        .text-zone {
+            display: flex;
+            justify-content: center;    /* Centers horizontally */
+            align-items: center;        /* Centers vertically */
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+            min-height: 100px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: center;         /* Centers the text inside */
+            padding: 10px;
+            flex-direction: column;     /* Ensures content flows vertically if needed */
+            height: 100%;               /* Ensure the container takes full height */
+        }
+    </style>
+</head>
+<body>
+    <h1>Relay Control Panel</h1>
+    <div class="container-wrapper">
+        <!-- Source Container -->
+        <div class="container">
+            <h2>BATTERIES</h2>
+            <div class="relay-square">
+                <p>Charging</p>
+                <label class="switch">
+                    <input type="checkbox" id="charging" onchange="controlRelay('charging', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="relay-square">
+                <p>Production</p>
+                <label class="switch">
+                    <input type="checkbox" id="production" onchange="controlRelay('production', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Relays Container -->
+        <div class="container">
+            <h2>SOURCE</h2>
+            <div class="relay-square">
+                <p>SOLAR PANEL</p>
+                <label class="switch">
+                    <input type="checkbox" id="relay1" onchange="controlRelay('relay1', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="relay-square">
+                <p>HYDRO-GENERATOR</p>
+                <label class="switch">
+                    <input type="checkbox" id="relay2" onchange="controlRelay('relay2', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Emergency Container -->
+        <div class="container">
+            <h2>PUMP</h2>
+            <div class="relay-square">
+                <p>WATER PUMP</p>
+                <label class="switch">
+                    <input type="checkbox" id="emergency" onchange="controlRelay('emergency', this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Text Zone for displaying messages -->
+    <div class="containertext">
+        <h2>System Messages</h2>
+        <div class="text-zone" id="textZone">
+            System is idle.
+        </div>
+    </div>
+
+    <script>
+        function controlRelay(relay, state) {
+            const chargingSwitch = document.getElementById("charging");
+            const productionSwitch = document.getElementById("production");
+            const relay1Switch = document.getElementById("relay1");
+            const relay2Switch = document.getElementById("relay2");
+            const emergencySwitch = document.getElementById("emergency");
+
+            let message = '';
+
+            if (relay === "charging" && state) {
+                // Prevent enabling "Charging" if "Production" is active
+                if (productionSwitch.checked) {
+                    message = "You need to deactivate Production before activating Charging.";
+                    chargingSwitch.checked = false; // Revert to the original state
+                    updateTextZone(message);
+                    return;
+                }
+                productionSwitch.disabled = true; // Disable "Production" switch
+                message = "Charging activated.";
+                updateTextZone(message);
+            } else if (relay === "charging" && !state) {
+                productionSwitch.disabled = false; // Re-enable "Production" switch
+                message = "Charging deactivated.";
+                updateTextZone(message);
+            }
+
+            if (relay === "production" && state) {
+                // Prevent enabling "Production" if "Charging" is active
+                if (chargingSwitch.checked) {
+                    message = "You need to deactivate Charging before activating Production.";
+                    productionSwitch.checked = false; // Revert to the original state
+                    updateTextZone(message);
+                    return;
+                }
+                chargingSwitch.disabled = true; // Disable "Charging" switch
+                message = "Production activated.";
+                updateTextZone(message);
+            } else if (relay === "production" && !state) {
+                chargingSwitch.disabled = false; // Re-enable "Charging" switch
+                message = "Production deactivated.";
+                updateTextZone(message);
+            }
+
+            if (relay === "relay1" && state) {
+                message = "Relay 1 activated.";
+                updateTextZone(message);
+            } else if (relay === "relay1" && !state) {
+                message = "Relay 1 deactivated.";
+                updateTextZone(message);
+            }
+
+            if (relay === "relay2" && state) {
+                message = "Relay 2 activated.";
+                updateTextZone(message);
+            } else if (relay === "relay2" && !state) {
+                message = "Relay 2 deactivated.";
+                updateTextZone(message);
+            }
+
+            if (relay === "emergency" && state) {
+                message = "Emergency Pump activated.";
+                updateTextZone(message);
+            } else if (relay === "emergency" && !state) {
+                message = "Emergency Pump deactivated.";
+                updateTextZone(message);
+            }
+
+            fetch(`/control?relay=${relay}&state=${state ? 'on' : 'off'}`)
+                .then(response => response.json())
+                .then(data => console.log(data)) // You can handle further response data here
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateTextZone(message) {
+            const textZone = document.getElementById("textZone");
+            textZone.textContent = message;
+        }
+    </script>
+</body>
+</html>
