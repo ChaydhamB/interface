@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Futuristic Energy Monitor</title>
     <style>
+        .top-bar {
+            position: fixed; /* Makes the bar fixed to the top of the viewport */
+            top: 0;
+            left: 0;
+            width: 100vw; /* Stretches the bar across the screen */
+            height: 100px;
+            background-color: #2b2b2b; /* Example background color */
+            color: white; /* Text color */
+            padding: 10px 20px; /* Padding for the bar */
+            box-shadow: 0 2px 5px rgba(0, 229, 255, 0.8); /* Optional shadow for effect */
+            z-index: 1000; /* Ensures the bar stays above other content */
+            
+            font-family: 'Poppins', sans-serif; /* Apply the custom font */
+            font-size: 24px; /* Adjust the font size */
+            font-weight: bold; /* Make the text bold */
+            flex: content;
+            display: flex; /* Use flexbox for centering */
+            flex: 1;
+            align-items: center; /* Vertically centers the content */
+            text-align: center; /* Centers the text horizontally */
+            margin: 0; /* Remove default margin */
+            padding: 0; /
+        }
+        .boxtext {
+            flex: 1; /* Optional: Can expand equally within its container */
+           /* Limit the box size */
+            text-align: center; /* Center text inside the box */
+            /* Center text vertically */
+       
+            color: white;
+            font-size: 24px;
+            border-radius: 10px;
+        }
+
+        .content {
+            margin-top: 60px; /* Creates space below the bar to prevent overlap */
+            padding: 20px;
+        }
         body {
             
             background-color: #0f0f0f;
@@ -149,6 +187,11 @@
             background: rgba(0, 229, 255, 0.2);
             box-shadow: 0 0 6px rgba(0, 229, 255, 0.8);
         }
+        .box:hover {
+    background: rgba(0, 229, 255, 0.4); /* Slightly darker background */
+    box-shadow: 0 0 12px rgba(0, 229, 255, 1); /* More pronounced glow */
+    transform: scale(1.05); /* Slight zoom effect */
+}
 
         /* Base .boxx styles */
 .boxx {
@@ -304,6 +347,13 @@
     </style>
 </head>
 <body>
+    <div class="top-bar"> 
+        <div class="boxtext"> 
+        SMART STEP PROJECT | Monitor - Supervise - Control</div>
+    </div>
+    <div class="content">
+
+    </div>
     <div class="weather-widget">
         <!-- Current Weather Section -->
         <div class="weather-header">
@@ -401,7 +451,7 @@
                 <div id="water-indicator" class="boxx">
                     <p>Water Overflow Check Now!</p>
                 </div>
-                <div class="boxx">
+                <div id="current-Indicator" class="boxx">
                     <p>Insufficient Power Check Now!</p>
                 </div>
                 <div class="boxx">
@@ -429,7 +479,7 @@
             <div >
                 <h2></h2>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="pumpRelay">
+                 
                     <span class="slider"></span>
                 </label>
             </div>
@@ -437,25 +487,15 @@
             <div class="switch-container">
                 <h2></h2>
                 <label class="toggle-switch">
-                    <input type="checkbox" id="hydroRelay">
+                    
                     <span class="slider"></span>
                 </label>
             </div>
             <!-- Solar Relay Control -->
-            <div class="switch-container">
-                <h2></h2>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="solarRelay">
-                    <span class="slider"></span>
-                </label>
-            </div>
+           
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>Created with ❤️ by TAKWA & CHAYDHAM</p>
-    </div>
 
     <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -504,7 +544,9 @@ const password = "123456";   // Replace with the user's password
 window.onload = () => {
     signInUser(email, password);
 };
-
+var current1=0;
+var voltage1=0;
+var power1=0;
 // Function to fetch data from Firebase
 function fetchData() {
     // Example paths in the Firebase database
@@ -514,16 +556,18 @@ function fetchData() {
     const pumpStatusRef = ref(database, 'control/pumprelay');
     const hydroStatusRef = ref(database, 'control/hydrorelay');
     const tank1Ref = ref(database, 'waterPercentage'); // Correct reference path for waterPercentage
-
+    const tank2Ref = ref(database, 'waterPercentage');
     // Getting values from Firebase and updating the HTML
     onValue(voltageRef, (snapshot) => {
         const voltage = snapshot.val();
+        voltage1=voltage;
         document.getElementById('voltage').textContent = 5 + " V";
     });
 
     onValue(currentRef, (snapshot) => {
-        const current = snapshot.val();
+        const current = (snapshot.val()).toFixed(5);
         document.getElementById('current').textContent = current + " A";
+        updatecurrentIndicator(current);
     });
 
     onValue(voltageRef, (snapshot) => {
@@ -532,7 +576,8 @@ function fetchData() {
         const current = snapshot.val();  // Get the current from Firebase
 
         // Calculate the power (P = V * I)
-        const power = voltage * current;
+        const power = (voltage * current).toFixed(5);
+       
 
         // Display the calculated power in the HTML
         document.getElementById('power').textContent = power + " W";
@@ -553,25 +598,20 @@ function fetchData() {
         const tankPercentage = snapshot.val();
         document.getElementById('tank1-fill').style.height = `${tankPercentage}%`;
         updateWaterIndicator(tankPercentage);
+        
     });
-
+    onValue(tank2Ref, (snapshot) => {
+        const tankPercentage =100-snapshot.val();
+        document.getElementById('tank2-fill').style.height = `${tankPercentage}%`;
+        updateWaterIndicator(tankPercentage);
+        
+    });
 
 }
 
 
 // Updating data in the database based on user interaction
-const pumpRelay = document.getElementById('pumpRelay');
-const hydroRelay = document.getElementById('hydroRelay');
 
-pumpRelay.addEventListener('change', (e) => {
-    const status = e.target.checked;
-    set(ref(database, 'control/pumprelay'), status); // Update pumprelay value in Firebase
-});
-
-hydroRelay.addEventListener('change', (e) => {
-    const status = e.target.checked;
-    set(ref(database, 'control/hydrorelay'), status); // Update hydrorelay value in Firebase
-});
 
     
 
@@ -688,6 +728,26 @@ function updateWaterIndicator(waterPercentage) {
         waterIndicator.classList.add('boxx');     // Revert to the default 'box' class
     }
 }
+function updatecurrentIndicator(x) {
+    
+    const cur = document.getElementById('current-Indicator'); // Select the element by ID
+
+    if (!cur) {
+        console.error("Element with id 'water-indicator' not found!");
+        return;
+    }
+
+    if (x <0.5) {
+        cur.classList.remove('boxx');  // Remove the default 'box' class
+        cur.classList.add('boxxem');    // Add the 'boxx' class
+    } else {
+        cur.classList.remove('boxxem'); // Remove 'boxx' class
+        cur.classList.add('boxx');     // Revert to the default 'box' class
+    }
+}
+
+
+
 
 // Call the function to check and update the class on page load or on any updates
 
@@ -786,6 +846,8 @@ setInterval(() => {
 
     updateGraph(newCurrent, newVoltage, newPower);
 }, 3000); // Update every 3 seconds
+    
+
     </script>
 
 </body>
