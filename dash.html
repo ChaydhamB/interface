@@ -566,7 +566,7 @@ function fetchData() {
 
     onValue(currentRef, (snapshot) => {
         const current = (snapshot.val()).toFixed(5);
-        document.getElementById('current').textContent = (0.1*current) + " A";
+        document.getElementById('current').textContent = ((0.1*current).toFixed(5)) + " A";
         updatecurrentIndicator(current);
     });
 
