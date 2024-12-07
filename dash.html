@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Futuristic Energy Monitor</title>
     <style>
+        
         .top-bar {
+            
             position: fixed; /* Makes the bar fixed to the top of the viewport */
             top: 0;
             left: 0;
@@ -472,29 +474,7 @@
         </div>
     </div>
     <!-- ESP8266 Control Panel Container (Wide) -->
-    <div class="wide-container">
-        
-        <div class="control-panel">
-            <!-- Pump Relay Control -->
-            <div >
-                <h2></h2>
-                <label class="toggle-switch">
-                 
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <!-- Hydro Relay Control -->
-            <div class="switch-container">
-                <h2></h2>
-                <label class="toggle-switch">
-                    
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <!-- Solar Relay Control -->
-           
-        </div>
-    </div>
+
 
 
     <script type="module">
@@ -756,6 +736,7 @@ function updatecurrentIndicator(x) {
     </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <script>
+    
         // Initial data
 let currentData = [];
 let voltageData = [];
@@ -836,6 +817,7 @@ const myChart = new Chart(ctx, {
 }
 
 });
+
 
 // Simulate data updates
 setInterval(() => {
