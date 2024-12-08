@@ -13,7 +13,7 @@
             left: 0;
             width: 100vw; /* Stretches the bar across the screen */
             height: 100px;
-            background-color: #2b2b2b; /* Example background color */
+            background: linear-gradient(135deg, #2c3e50, #397881);
             color: white; /* Text color */
             padding: 10px 20px; /* Padding for the bar */
             box-shadow: 0 2px 5px rgba(0, 229, 255, 0.8); /* Optional shadow for effect */
@@ -47,7 +47,7 @@
         }
         body {
             
-            background-color: #0f0f0f;
+            background: linear-gradient(110deg, #2d4a4e, #742f63);
             color: #00e5ff;
             font-family: 'Arial', sans-serif;
             display: flex;
@@ -96,13 +96,14 @@
             width: 100%;
             justify-content: space-around;
             margin-bottom: 25px;
+
         }
 
         .container, .container2 {
             text-align: center;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 0px rgba(0, 229, 255, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
             flex: 1;
             min-width: 300px;
@@ -111,7 +112,7 @@
         }
 
         .container2 {
-            box-shadow: 0 0 6px #ff0000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .wide-container {
@@ -186,18 +187,18 @@
 
         .box {
             flex: 1;
-            background: rgba(0, 229, 255, 0.2);
-            box-shadow: 0 0 6px rgba(0, 229, 255, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         .box:hover {
     background: rgba(0, 229, 255, 0.4); /* Slightly darker background */
-    box-shadow: 0 0 12px rgba(0, 229, 255, 1); /* More pronounced glow */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transform: scale(1.05); /* Slight zoom effect */
 }
 
         /* Base .boxx styles */
 .boxx {
-    background: #343434;
+    background: rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 6px #ff0000;
     font-size: 1.5em;
     color: #898989;
@@ -285,7 +286,7 @@
     width: 99%; /* Updated width to 95% */
     height: 300px;
     padding: 2px; /* Added padding */
-    background: rgba(255, 255, 255, 0.1); /* Changed background color and opacity */
+    background: rgba(0, 0, 0, 0.3);/* Changed background color and opacity */
     box-shadow: 0 0 6px rgba(170, 170, 170, 0.8); /* Updated shadow color and blur */
     backdrop-filter: blur(10px); /* Added backdrop blur effect */
     border-radius: 10px; /* Reduced border radius */
@@ -295,8 +296,8 @@
 
         .weather-header {
             display: flex;
-            padding: 20px;
-            background: #2b2b2b;
+            padding: 1px;
+            background: rgba(0, 0, 0, 0.3);
             border-bottom: 1px solid #666666;
             
 
@@ -330,7 +331,7 @@
             display: flex;
             justify-content: space-between;
             padding: 10px 10px;
-            background: #5c5c5c;
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
         }
 
@@ -340,7 +341,7 @@
 
         .forecast-day p {
             margin: 5px 0;
-            color: #333;
+            color: #ffffff;
         }
 
         .forecast-day img {
@@ -527,6 +528,14 @@ window.onload = () => {
 var current1=0;
 var voltage1=0;
 var power1=0;
+function calculateVoltage(current) {
+            const maxVoltage = 5; // Maximum voltage in your system
+            if (current <= 0) {
+                return 0; // Voltage drops to 0 when the system is off
+            }
+            // Simple model: Voltage drops slightly as current increases
+            return Math.max(maxVoltage - 0.1 * current, 0).toFixed(2); // Mimic voltage drop
+        }
 // Function to fetch data from Firebase
 function fetchData() {
     // Example paths in the Firebase database
@@ -538,17 +547,21 @@ function fetchData() {
     const tank1Ref = ref(database, 'waterPercentage'); // Correct reference path for waterPercentage
     const tank2Ref = ref(database, 'waterPercentage');
     // Getting values from Firebase and updating the HTML
-    onValue(voltageRef, (snapshot) => {
-        const voltage = snapshot.val();
-        voltage1=voltage;
-        document.getElementById('voltage').textContent = 5 + " V";
-    });
-
     onValue(currentRef, (snapshot) => {
         const current = (snapshot.val()).toFixed(5);
+       const voltage=calculateVoltage(current) ;
         document.getElementById('current').textContent = current + " A";
-        updatecurrentIndicator(current);
+        document.getElementById('voltage').textContent = calculateVoltage(current) + "V";
+        
+        document.getElementById('power').textContent = (current*voltage).toFixed(5) + " W";
+
     });
+
+    
+        
+   
+
+    
 
     onValue(voltageRef, (snapshot) => {
     const voltage = 5;  // Get the voltage from Firebase
@@ -560,7 +573,7 @@ function fetchData() {
        
 
         // Display the calculated power in the HTML
-        document.getElementById('power').textContent = power + " W";
+       
     });
 });
 
@@ -588,6 +601,7 @@ function fetchData() {
     });
 
 }
+
 
 
 // Updating data in the database based on user interaction
