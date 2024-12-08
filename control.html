@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relay Control with Firebase Authentication</title>
+    <title>Relay Control Dashboard</title>
     <style>
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #333;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
             color: white;
+        }
+
+        header, footer {
+            text-align: center;
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        header h1, footer p {
+            margin: 0;
+            font-weight: normal;
         }
 
         .container {
@@ -18,34 +30,44 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            min-height: calc(100vh - 100px);
+            gap: 20px;
         }
 
+        /* Card Style */
         .relay {
             width: 90%;
-            max-width: 500px;
-            background-color: #444;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .relay:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
         }
 
         .relay h2 {
-            margin: 0;
-            padding: 10px 0;
-            font-size: 20px;
+            margin: 0 0 10px;
+            font-size: 22px;
+            color: #00d1b2;
         }
 
         .relay p {
-            font-size: 16px;
             margin: 10px 0;
+            font-size: 18px;
         }
 
+        /* Switch Styles */
         .switch-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 10px 0;
         }
 
         .switch {
@@ -92,19 +114,33 @@
             transform: translateX(25px);
         }
 
+        /* Status Section */
         .status {
             margin-top: 20px;
             padding: 15px;
-            background-color: #555;
-            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
             text-align: center;
-            max-width: 500px;
+            max-width: 400px;
+            font-size: 18px;
+        }
+
+        /* Icon Style */
+        .icon {
+            font-size: 40px;
+            color: #00d1b2;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Relay Control Dashboard</h1>
+    </header>
+
     <div class="container">
         <div class="relay">
+            <div class="icon">🔋</div>
             <h2>Charging Control</h2>
             <div class="switch-container">
                 <p>Solar relay</p>
@@ -116,6 +152,7 @@
         </div>
 
         <div class="relay">
+            <div class="icon">⚡</div>
             <h2>Production Control</h2>
             <div class="switch-container">
                 <p>Series relay</p>
@@ -127,6 +164,7 @@
         </div>
 
         <div class="relay">
+            <div class="icon">💧</div>
             <h2>Pump Control</h2>
             <div class="switch-container">
                 <p>Toggle Pump</p>
@@ -140,65 +178,68 @@
         <div class="status" id="status">System Status: Idle</div>
     </div>
 
+    <footer>
+        <p>© 2024 Relay Control Dashboard</p>
+    </footer>
+
     <script type="module">
         // Firebase SDK imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCB24M1uhp6-Vv-ggaqhhKcQqxQcPnd6Cc",
-    authDomain: "step-66bce.firebaseapp.com",
-    databaseURL: "https://step-66bce-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "step-66bce",
-    storageBucket: "step-66bce.appspot.com",
-    messagingSenderId: "724663138827",
-    appId: "1:724663138827:web:e142993cb56f3d0f81e50e"
-};
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCB24M1uhp6-Vv-ggaqhhKcQqxQcPnd6Cc",
+            authDomain: "step-66bce.firebaseapp.com",
+            databaseURL: "https://step-66bce-default-rtdb.europe-west1.firebasedatabase.app/",
+            projectId: "step-66bce",
+            storageBucket: "step-66bce.appspot.com",
+            messagingSenderId: "724663138827",
+            appId: "1:724663138827:web:e142993cb56f3d0f81e50e"
+        };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
-// Sign in user
-const email = "chaydambaya1@gmail.com";
-const password = "123456";
+        // Sign in user
+        const email = "chaydambaya1@gmail.com";
+        const password = "123456";
 
-signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-        console.log("Signed in successfully.");
-    })
-    .catch((error) => {
-        console.error("Error signing in:", error.message);
-    });
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                console.log("Signed in successfully.");
+            })
+            .catch((error) => {
+                console.error("Error signing in:", error.message);
+            });
 
-// Update relay state in Firebase
-window.updateRelayState = function (relay, state) {
-    const relayRef = ref(database, `relays/${relay}`);
-    set(relayRef, { state: state ? "on" : "off" })
-        .then(() => {
-            console.log(`${relay} is now ${state ? "ON" : "OFF"}.`);
-        })
-        .catch((error) => {
-            console.error(`Error updating ${relay} state:`, error.message);
+        // Update relay state in Firebase
+        window.updateRelayState = function (relay, state) {
+            const relayRef = ref(database, `relays/${relay}`);
+            set(relayRef, { state: state ? "on" : "off" })
+                .then(() => {
+                    console.log(`${relay} is now ${state ? "ON" : "OFF"}.`);
+                })
+                .catch((error) => {
+                    console.error(`Error updating ${relay} state:`, error.message);
+                });
+        };
+
+        // Listen for changes in states
+        const pumpRef = ref(database, "relays/pump");
+        onValue(pumpRef, (snapshot) => {
+            const pumpState = snapshot.val()?.state === "on";
+            document.getElementById("pump").checked = pumpState;
         });
-};
 
-// Listen for changes in pump state
-const pumpRef = ref(database, "relays/pump");
-onValue(pumpRef, (snapshot) => {
-    const pumpState = snapshot.val()?.state === "on";
-    document.getElementById("pump").checked = pumpState;
-});
-
-// Listen for changes in charging state
-const chargingRef = ref(database, "relays/charging");
-onValue(chargingRef, (snapshot) => {
-    const chargingState = snapshot.val()?.state === "on";
-    document.getElementById("charging").checked = chargingState;
-});
-</script>
+        const chargingRef = ref(database, "relays/charging");
+        onValue(chargingRef, (snapshot) => {
+            const chargingState = snapshot.val()?.state === "on";
+            document.getElementById("charging").checked = chargingState;
+        });
+    </script>
 </body>
 </html>
